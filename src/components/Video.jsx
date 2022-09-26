@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import classes from "../styles/Video.module.css";
 import videoBg from "./assets/images/3.jpg";
 
 const Video = () => {
   return (
-    <a href="quiz.html">
+    <Link to="/quiz">
       <div className={classes.video}>
         <img src={videoBg} alt="" />
         <p>#23 React Hooks Bangla - React useReducer hook Bangla</p>
@@ -13,7 +14,7 @@ const Video = () => {
           <p>Score : Not taken yet</p>
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 
