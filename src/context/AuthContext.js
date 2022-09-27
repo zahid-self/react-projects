@@ -12,7 +12,7 @@ import "../firebase";
 
 const AuthContext = createContext();
 
-export function useAUth() {
+export function useAuth() {
   return useContext(AuthContext);
 }
 
@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
     });
 
     return unsubscribe;
-  });
+  }, []);
 
   //user signup
   async function signUp(email, password, username) {
