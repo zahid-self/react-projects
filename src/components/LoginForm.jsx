@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import classes from "../styles/Login.module.css";
 import Button from "./Button";
 import Form from "./Form";
 import TextInput from "./TextInput";
@@ -30,7 +29,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Form className={classes.login} onSubmit={handleSubmit}>
+    <Form style={{ height: "330px" }} onSubmit={handleSubmit}>
       <TextInput
         icon={"alternate_email"}
         type="text"
