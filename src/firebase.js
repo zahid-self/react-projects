@@ -7,6 +7,7 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FSTORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FMESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FAPP_ID,
+  databaseURL: process.env.REACT_APP_FDB_URL,
 };
 
 const app = initializeApp(firebaseConfig);
