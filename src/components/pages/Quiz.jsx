@@ -93,6 +93,7 @@ const Quiz = () => {
           <Answers
             options={qna[currentQuestion].options}
             handleChange={handeAnswerChange}
+            input={true}
           />
           <ProgressBar
             next={handleNextQuestion}
