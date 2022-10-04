@@ -3,7 +3,7 @@ import ReactPlayer from "react-player/youtube";
 import { useParams } from "react-router-dom";
 import classes from "../styles/Miniplayer.module.css";
 
-const Miniplayer = () => {
+const Miniplayer = ({ title }) => {
   const miniplayerRef = useRef();
   const [miniplayer, setMiniplayer] = useState(false);
   const { id } = useParams();
@@ -42,7 +42,7 @@ const Miniplayer = () => {
         playing={miniplayer}
         controls
       />
-      <p>#23 React Hooks Bangla - React useReducer hook Bangla</p>
+      <p>{title}</p>
     </div>
   );
 };
