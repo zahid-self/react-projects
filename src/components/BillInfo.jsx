@@ -11,16 +11,19 @@ const BillInfo = () => {
           type="text"
           className="form-control my-2"
           placeholder="Who is this invoice to?"
+          required
         />
         <input
           type="email"
           className="form-control my-2"
           placeholder="Email address"
+          required
         />
         <input
           type="text"
           className="form-control my-2"
           placeholder="Billing address"
+          required
         />
       </div>
       <div className="col">
@@ -31,16 +34,19 @@ const BillInfo = () => {
           type="text"
           className="form-control my-2"
           placeholder="Who is this invoice from?"
+          required
         />
         <input
           type="email"
           className="form-control my-2"
           placeholder="Email address"
+          required
         />
         <input
           type="text"
           className="form-control my-2"
           placeholder="Billing address"
+          required
         />
       </div>
     </section>

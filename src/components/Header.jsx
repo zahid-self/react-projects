@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Hr from "./Hr";
 
 const Header = () => {
+  const [date, setDate] = useState();
+  const [invoiceNumber, setInvoiceNumber] = useState(1);
   return (
     <>
       <section className="d-flex flex-row align-items-start justify-content-between mb-3">
@@ -9,7 +11,13 @@ const Header = () => {
           <div className="d-flex flex-column">
             <div className="mb-2">
               <span className="fw-bold">Current Date:</span>
-              <span>1/2/1212</span>
+              <span>
+                {Number(new Date().getMonth() + 1) +
+                  "/" +
+                  new Date().getDate() +
+                  "/" +
+                  new Date().getFullYear()}
+              </span>
             </div>
           </div>
           <div className="d-flex flex-row align-items-center">
@@ -30,6 +38,8 @@ const Header = () => {
             className="form-control"
             style={{ maxWidth: "70px" }}
             autoComplete="off"
+            value={invoiceNumber}
+            onChange={(e) => setInvoiceNumber(e.target.value)}
           />
         </div>
       </section>
