@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
+import { ReactSVG } from "react-svg";
+import Fly from "../assets/img/Fly.svg";
 import Hr from "./Hr";
 import TextInput from "./TextInput";
 
@@ -17,317 +20,458 @@ const Layout = () => {
   const [tax, setTax] = useState(0.0);
   const [discount, setDiscount] = useState(0.0);
   const [notes, setNotes] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleInvoicePreview = (e) => {
     e.preventDefault();
-    console.log(invoiceNumber, whoIsInvoiceFrom, emailFrom, billingAddressFrom);
+    setIsOpen(true);
   };
+
+  const hideModal = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit}>
-        <div className="row">
-          <div className="col-lg-9 col-md-8">
-            <div className="p-4 p-xl-5 my-3 my-xl-4 card">
-              <section className="d-flex flex-row align-items-start justify-content-between mb-3">
-                <div className="d-flex flex-column">
+    <>
+      <div className="container">
+        <form>
+          <div className="row">
+            <div className="col-lg-9 col-md-8">
+              <div className="p-4 p-xl-5 my-3 my-xl-4 card">
+                <section className="d-flex flex-row align-items-start justify-content-between mb-3">
                   <div className="d-flex flex-column">
-                    <div className="mb-2">
-                      <span className="fw-bold">Current Date:</span>
-                      <span>
-                        {Number(new Date().getMonth() + 1) +
-                          "/" +
-                          new Date().getDate() +
-                          "/" +
-                          new Date().getFullYear()}
-                      </span>
+                    <div className="d-flex flex-column">
+                      <div className="mb-2">
+                        <span className="fw-bold">Current Date:</span>
+                        <span>
+                          {Number(new Date().getMonth() + 1) +
+                            "/" +
+                            new Date().getDate() +
+                            "/" +
+                            new Date().getFullYear()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="d-flex flex-row align-items-center">
+                      <span className="fw-bold d-block me-2">Due Date:</span>
+                      <input
+                        type="date"
+                        className="form-control"
+                        style={{ maxWidth: "150px" }}
+                      />
                     </div>
                   </div>
                   <div className="d-flex flex-row align-items-center">
-                    <span className="fw-bold d-block me-2">Due Date:</span>
+                    <span className="fw-bold me-2">Invoice Number:</span>
                     <input
-                      type="date"
+                      type="number"
+                      min="1"
+                      required
                       className="form-control"
-                      style={{ maxWidth: "150px" }}
+                      style={{ maxWidth: "70px" }}
+                      autoComplete="off"
+                      value={invoiceNumber}
+                      onChange={(e) => setInvoiceNumber(e.target.value)}
                     />
                   </div>
-                </div>
-                <div className="d-flex flex-row align-items-center">
-                  <span className="fw-bold me-2">Invoice Number:</span>
+                </section>
+                <Hr className={"my-4"} />
+                <section className="mb-5 row">
+                  <div className="col">
+                    <label className="fw-bold form-label" htmlFor="">
+                      Bill to:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control my-2"
+                      placeholder="Who is this invoice to?"
+                      required
+                      value={whoIsInvoiceTo}
+                      onChange={(e) => setWhoIsInvoiceTo(e.target.value)}
+                    />
+                    <input
+                      type="email"
+                      className="form-control my-2"
+                      placeholder="Email address"
+                      required
+                      value={emailTo}
+                      onChange={(e) => setEmailTo(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className="form-control my-2"
+                      placeholder="Billing address"
+                      required
+                      value={billingAddressTo}
+                      onChange={(e) => setBillingAddressTo(e.target.value)}
+                    />
+                  </div>
+                  <div className="col">
+                    <label className="fw-bold form-label" htmlFor="">
+                      Bill from:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control my-2"
+                      placeholder="Who is this invoice from?"
+                      required
+                      value={whoIsInvoiceFrom}
+                      onChange={(e) => setWhoIsInvoiceFrom(e.target.value)}
+                    />
+                    <input
+                      type="email"
+                      className="form-control my-2"
+                      placeholder="Email address"
+                      required
+                      value={emailFrom}
+                      onChange={(e) => setEmailFrom(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className="form-control my-2"
+                      placeholder="Billing address"
+                      required
+                      value={billingAddressFrom}
+                      onChange={(e) => setBillingAddressFrom(e.target.value)}
+                    />
+                  </div>
+                </section>
+                <section>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>ITEM</th>
+                        <th>QTY</th>
+                        <th>PRICE/RATE</th>
+                        <th className="text-center">ACTION</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{ width: "100%" }}>
+                          <div className="my-1 flex-nowrap input-group">
+                            <TextInput
+                              type={"text"}
+                              required
+                              text={"Item name"}
+                              value={itemName}
+                              onChange={(e) => setItemName(e.target.value)}
+                            />
+                          </div>
+                          <div className="my-2 flex-nowrap input-group">
+                            <TextInput
+                              type={"text"}
+                              required
+                              text={"Item description"}
+                              value={itemDesc}
+                              onChange={(e) => setItemDesc(e.target.value)}
+                            />
+                          </div>
+                        </td>
+                        <td style={{ minWidth: "70px" }}>
+                          <TextInput
+                            type={"number"}
+                            required
+                            autoComplete="off"
+                            min="1"
+                            value={itemQty}
+                            onChange={(e) => setItemQty(e.target.value)}
+                          />
+                        </td>
+                        <td style={{ minWidth: "70px" }}>
+                          <div className="my-1 flex-nowrap input-group">
+                            <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
+                              <span
+                                className="border border-2 border-secondary rounded-circle d-flex align-items-center justify-content-center small"
+                                style={{ width: "20px", height: "20px" }}
+                              >
+                                $
+                              </span>
+                            </span>
+                            <TextInput
+                              type={"number"}
+                              required
+                              autoComplete="off"
+                              value={itemPrice}
+                              onChange={(e) => setItemPrice(e.target.value)}
+                            />
+                          </div>
+                        </td>
+                        <td
+                          className="text-center"
+                          style={{ minWidth: "50px" }}
+                        >
+                          <svg
+                            stroke="currentColor"
+                            fill="currentColor"
+                            strokeWidth="0"
+                            viewBox="0 0 24 24"
+                            className="text-white mt-1 btn btn-danger"
+                            height="1em"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style={{
+                              height: "33px",
+                              width: "33px",
+                              padding: "7.5px",
+                            }}
+                          >
+                            <path
+                              fill="none"
+                              d="M17.004 20L17.003 8h-1-8-1v12H17.004zM13.003 10h2v8h-2V10zM9.003 10h2v8h-2V10zM9.003 4H15.003V6H9.003z"
+                            ></path>
+                            <path d="M5.003,20c0,1.103,0.897,2,2,2h10c1.103,0,2-0.897,2-2V8h2V6h-3h-1V4c0-1.103-0.897-2-2-2h-6c-1.103,0-2,0.897-2,2v2h-1h-3 v2h2V20z M9.003,4h6v2h-6V4z M8.003,8h8h1l0.001,12H7.003V8H8.003z"></path>
+                            <path d="M9.003 10H11.003V18H9.003zM13.003 10H15.003V18H13.003z"></path>
+                          </svg>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button className="btn btn-primary">Add Item</button>
+                </section>
+                <section className="mt-4 justify-content-end row">
+                  <div className="col-lg-6">
+                    <div className="d-flex flex-row align-items-start justify-content-between">
+                      <span className="fw-bold">Subtotal:</span>
+                      <span>$1.00</span>
+                    </div>
+                    <div className="d-flex flex-row align-items-start justify-content-between">
+                      <span className="fw-bold">Discount:</span>
+                      <span>(0%)$0.00</span>
+                    </div>
+                    <div className="d-flex flex-row align-items-start justify-content-between">
+                      <span className="fw-bold">Tax:</span>
+                      <span>(0%)$0.00</span>
+                    </div>
+                    <div className="d-flex flex-row align-items-start justify-content-between"></div>
+                    <hr />
+                    <div className="d-flex flex-row align-items-start justify-content-between">
+                      <span className="fw-bold">Total:</span>
+                      <span className="fw-bold">$0.00</span>
+                    </div>
+                  </div>
+                </section>
+                <Hr />
+                <label htmlFor="" className="fw-bold form-label">
+                  Notes:
+                </label>
+                <textarea
+                  className="form-control my-2"
+                  rows="1"
+                  placeholder="Thanks for your business!"
+                  onChange={(e) => setNotes(e.target.value)}
+                  defaultValue={notes}
+                ></textarea>
+              </div>
+            </div>
+            <div className="col-lg-3 col-md-4">
+              <div className="my-3 my-xl-4 card">
+                <button
+                  className="btn btn-primary btn-block"
+                  onClick={handleInvoicePreview}
+                >
+                  Review Invoice
+                </button>
+              </div>
+              <Hr />
+              <div className="mb-3">
+                <label htmlFor="" className="fw-bold form-label">
+                  Currency:
+                </label>
+                <select
+                  aria-label="Change Currency"
+                  className="btn btn-light my-1 form-select"
+                >
+                  <option value="$">USD (United States Dollar)</option>
+                  <option value="£">GBP (British Pound Sterling)</option>
+                  <option value="¥">JPY (Japanese Yen)</option>
+                  <option value="$">CAD (Canadian Dollar)</option>
+                  <option value="$">AUD (Australian Dollar)</option>
+                  <option value="$">SGD (Signapore Dollar)</option>
+                  <option value="¥">CNY (Chinese Renminbi)</option>
+                  <option value="₿">BTC (Bitcoin)</option>
+                </select>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="" className="fw-bold form-label">
+                  Tax rate:
+                </label>
+                <div className="my-1 flex-nowrap input-group">
                   <input
                     type="number"
                     min="1"
                     required
                     className="form-control"
-                    style={{ maxWidth: "70px" }}
                     autoComplete="off"
-                    value={invoiceNumber}
-                    onChange={(e) => setInvoiceNumber(e.target.value)}
+                    value={tax}
+                    onChange={(e) => setTax(e.target.value)}
                   />
+                  <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
+                    <span
+                      className="rounded-circle d-flex align-items-center justify-content-center small"
+                      style={{ width: "20px", height: "20px" }}
+                    >
+                      %
+                    </span>
+                  </span>
                 </div>
-              </section>
-              <Hr className={"my-4"} />
-              <section className="mb-5 row">
-                <div className="col">
-                  <label className="fw-bold form-label" htmlFor="">
-                    Bill to:
-                  </label>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="" className="fw-bold form-label">
+                  Discount rate:
+                </label>
+                <div className="my-1 flex-nowrap input-group">
                   <input
-                    type="text"
-                    className="form-control my-2"
-                    placeholder="Who is this invoice to?"
+                    type="number"
+                    min="1"
                     required
-                    value={whoIsInvoiceTo}
-                    onChange={(e) => setWhoIsInvoiceTo(e.target.value)}
+                    className="form-control"
+                    autoComplete="off"
+                    value={discount}
+                    onChange={(e) => setDiscount(e.target.value)}
                   />
-                  <input
-                    type="email"
-                    className="form-control my-2"
-                    placeholder="Email address"
-                    required
-                    value={emailTo}
-                    onChange={(e) => setEmailTo(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    className="form-control my-2"
-                    placeholder="Billing address"
-                    required
-                    value={billingAddressTo}
-                    onChange={(e) => setBillingAddressTo(e.target.value)}
-                  />
+                  <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
+                    <span
+                      className="rounded-circle d-flex align-items-center justify-content-center small"
+                      style={{ width: "20px", height: "20px" }}
+                    >
+                      %
+                    </span>
+                  </span>
                 </div>
-                <div className="col">
-                  <label className="fw-bold form-label" htmlFor="">
-                    Bill from:
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control my-2"
-                    placeholder="Who is this invoice from?"
-                    required
-                    value={whoIsInvoiceFrom}
-                    onChange={(e) => setWhoIsInvoiceFrom(e.target.value)}
-                  />
-                  <input
-                    type="email"
-                    className="form-control my-2"
-                    placeholder="Email address"
-                    required
-                    value={emailFrom}
-                    onChange={(e) => setEmailFrom(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    className="form-control my-2"
-                    placeholder="Billing address"
-                    required
-                    value={billingAddressFrom}
-                    onChange={(e) => setBillingAddressFrom(e.target.value)}
-                  />
-                </div>
-              </section>
-              <section>
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>ITEM</th>
-                      <th>QTY</th>
-                      <th>PRICE/RATE</th>
-                      <th className="text-center">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td style={{ width: "100%" }}>
-                        <div className="my-1 flex-nowrap input-group">
-                          <TextInput
-                            type={"text"}
-                            required
-                            text={"Item name"}
-                            value={itemName}
-                            onChange={(e) => setItemName(e.target.value)}
-                          />
-                        </div>
-                        <div className="my-2 flex-nowrap input-group">
-                          <TextInput
-                            type={"text"}
-                            required
-                            text={"Item description"}
-                            value={itemDesc}
-                            onChange={(e) => setItemDesc(e.target.value)}
-                          />
-                        </div>
-                      </td>
-                      <td style={{ minWidth: "70px" }}>
-                        <TextInput
-                          type={"number"}
-                          required
-                          autoComplete="off"
-                          min="1"
-                          value={itemQty}
-                          onChange={(e) => setItemQty(e.target.value)}
-                        />
-                      </td>
-                      <td style={{ minWidth: "70px" }}>
-                        <div className="my-1 flex-nowrap input-group">
-                          <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
-                            <span
-                              className="border border-2 border-secondary rounded-circle d-flex align-items-center justify-content-center small"
-                              style={{ width: "20px", height: "20px" }}
-                            >
-                              $
-                            </span>
-                          </span>
-                          <TextInput
-                            type={"number"}
-                            required
-                            autoComplete="off"
-                            value={itemPrice}
-                            onChange={(e) => setItemPrice(e.target.value)}
-                          />
-                        </div>
-                      </td>
-                      <td className="text-center" style={{ minWidth: "50px" }}>
-                        <svg
-                          stroke="currentColor"
-                          fill="currentColor"
-                          strokeWidth="0"
-                          viewBox="0 0 24 24"
-                          className="text-white mt-1 btn btn-danger"
-                          height="1em"
-                          width="1em"
-                          xmlns="http://www.w3.org/2000/svg"
-                          style={{
-                            height: "33px",
-                            width: "33px",
-                            padding: "7.5px",
-                          }}
-                        >
-                          <path
-                            fill="none"
-                            d="M17.004 20L17.003 8h-1-8-1v12H17.004zM13.003 10h2v8h-2V10zM9.003 10h2v8h-2V10zM9.003 4H15.003V6H9.003z"
-                          ></path>
-                          <path d="M5.003,20c0,1.103,0.897,2,2,2h10c1.103,0,2-0.897,2-2V8h2V6h-3h-1V4c0-1.103-0.897-2-2-2h-6c-1.103,0-2,0.897-2,2v2h-1h-3 v2h2V20z M9.003,4h6v2h-6V4z M8.003,8h8h1l0.001,12H7.003V8H8.003z"></path>
-                          <path d="M9.003 10H11.003V18H9.003zM13.003 10H15.003V18H13.003z"></path>
-                        </svg>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <button className="btn btn-primary">Add Item</button>
-              </section>
-              <section className="mt-4 justify-content-end row">
-                <div className="col-lg-6">
-                  <div className="d-flex flex-row align-items-start justify-content-between">
-                    <span className="fw-bold">Subtotal:</span>
-                    <span>$1.00</span>
-                  </div>
-                  <div className="d-flex flex-row align-items-start justify-content-between">
-                    <span className="fw-bold">Discount:</span>
-                    <span>(0%)$0.00</span>
-                  </div>
-                  <div className="d-flex flex-row align-items-start justify-content-between">
-                    <span className="fw-bold">Tax:</span>
-                    <span>(0%)$0.00</span>
-                  </div>
-                  <div className="d-flex flex-row align-items-start justify-content-between"></div>
-                  <hr />
-                  <div className="d-flex flex-row align-items-start justify-content-between">
-                    <span className="fw-bold">Total:</span>
-                    <span className="fw-bold">$0.00</span>
-                  </div>
-                </div>
-              </section>
-              <Hr />
-              <label htmlFor="" className="fw-bold form-label">
-                Notes:
-              </label>
-              <textarea
-                className="form-control my-2"
-                rows="1"
-                placeholder="Thanks for your business!"
-                onChange={(e) => setNotes(e.target.value)}
-                defaultValue={notes}
-              ></textarea>
+              </div>
             </div>
           </div>
-          <div className="col-lg-3 col-md-4">
-            <div className="my-3 my-xl-4 card">
-              <button className="btn btn-primary btn-block">
-                Review Invoice
-              </button>
+        </form>
+      </div>
+
+      <Modal
+        show={isOpen}
+        onHide={hideModal}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
+          <div className="w-100">
+            <h4 className="fw-bold my-2">{whoIsInvoiceFrom}</h4>
+            <h6 className="fw-bold text-secondary mb-1">{invoiceNumber}</h6>
+          </div>
+          <div className="text-end ms-4">
+            <h6 className="fw-bold mt-1 mb-2">Amount Due:</h6>
+            <h5 className="fw-bold text-secondary">$1234</h5>
+          </div>
+        </Modal.Header>
+        <Modal.Body className="p-4">
+          <div className="row mb-4">
+            <div className="col-md-4">
+              <div className="fw-bold">Billed to:</div>
+              <div>{whoIsInvoiceTo}</div>
+              <div>{billingAddressTo}</div>
+              <div>{emailTo}</div>
             </div>
-            <Hr />
-            <div className="mb-3">
-              <label htmlFor="" className="fw-bold form-label">
-                Currency:
-              </label>
-              <select
-                aria-label="Change Currency"
-                className="btn btn-light my-1 form-select"
-              >
-                <option value="$">USD (United States Dollar)</option>
-                <option value="£">GBP (British Pound Sterling)</option>
-                <option value="¥">JPY (Japanese Yen)</option>
-                <option value="$">CAD (Canadian Dollar)</option>
-                <option value="$">AUD (Australian Dollar)</option>
-                <option value="$">SGD (Signapore Dollar)</option>
-                <option value="¥">CNY (Chinese Renminbi)</option>
-                <option value="₿">BTC (Bitcoin)</option>
-              </select>
+            <div className="col-md-4">
+              <div className="fw-bold">Billed From:</div>
+              <div>{whoIsInvoiceFrom}</div>
+              <div>{billingAddressFrom}</div>
+              <div>{emailFrom}</div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="" className="fw-bold form-label">
-                Tax rate:
-              </label>
-              <div className="my-1 flex-nowrap input-group">
-                <input
-                  type="number"
-                  min="1"
-                  required
-                  className="form-control"
-                  autoComplete="off"
-                  value={tax}
-                  onChange={(e) => setTax(e.target.value)}
-                />
-                <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
-                  <span
-                    className="rounded-circle d-flex align-items-center justify-content-center small"
-                    style={{ width: "20px", height: "20px" }}
-                  >
-                    %
-                  </span>
-                </span>
-              </div>
+            <div className="col-md-4">
+              <div className="fw-bold">Date of issue:</div>
+              <div>2022-02-08</div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="" className="fw-bold form-label">
-                Discount rate:
-              </label>
-              <div className="my-1 flex-nowrap input-group">
-                <input
-                  type="number"
-                  min="1"
-                  required
-                  className="form-control"
-                  autoComplete="off"
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                />
-                <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
-                  <span
-                    className="rounded-circle d-flex align-items-center justify-content-center small"
-                    style={{ width: "20px", height: "20px" }}
-                  >
-                    %
-                  </span>
-                </span>
-              </div>
-            </div>
+          </div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>QTY</th>
+                <th>DESCRIPTION</th>
+                <th>PRICE</th>
+                <th>AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Doloribus, ut.
+                </td>
+                <td>$5</td>
+                <td>$5</td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="table">
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr className="text-end">
+                <td></td>
+                <td className="fw-bold" style={{ width: "100px" }}>
+                  SUBTOTAL
+                </td>
+                <td className="text-end" style={{ width: "100px" }}>
+                  $ 120
+                </td>
+              </tr>
+              <tr className="text-end">
+                <td></td>
+                <td className="fw-bold" style={{ width: "100px" }}>
+                  TAX
+                </td>
+                <td className="text-end" style={{ width: "100px" }}>
+                  $ {tax}
+                </td>
+              </tr>
+              <tr className="text-end">
+                <td></td>
+                <td className="fw-bold" style={{ width: "100px" }}>
+                  DISCOUNT
+                </td>
+                <td className="text-end" style={{ width: "100px" }}>
+                  $ {discount}
+                </td>
+              </tr>
+              <tr className="text-end">
+                <td></td>
+                <td className="fw-bold" style={{ width: "100px" }}>
+                  TOTAL
+                </td>
+                <td className="text-end" style={{ width: "100px" }}>
+                  $ 120
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="bg-light py-3 px-4 rounded">{itemDesc}</div>
+        </Modal.Body>
+        <div className="row p-4">
+          <div className="col-md-6">
+            <button className="d-block w-100 btn btn-primary">
+              <span className="d-flex justify-content-center">
+                <ReactSVG src={Fly} />
+                Send Invoice
+              </span>
+            </button>
+          </div>
+          <div className="col-md-6">
+            <button
+              className="d-block w-100 mt-3 mt-md-0 btn btn-outline-primary"
+              onClick={hideModal}
+            >
+              <span className="d-flex justify-content-center">
+                <ReactSVG src={Fly} />
+                Download Copy
+              </span>
+            </button>
           </div>
         </div>
-      </form>
-    </div>
+      </Modal>
+    </>
   );
 };
 
