@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import { ReactSVG } from "react-svg";
 import Fly from "../assets/img/Fly.svg";
 import Hr from "./Hr";
-import TextInput from "./TextInput";
+import ItemAddForm from "./ItemAddForm";
 
 const Layout = () => {
   const [invoiceNumber, setInvoiceNumber] = useState(1);
@@ -15,12 +15,24 @@ const Layout = () => {
   const [billingAddressFrom, setBillingAddressFrom] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemDesc, setItemDesc] = useState("");
+  const [currency, setCurrency] = useState("$");
+  const [date, setDate] = useState("");
   const [itemQty, setItemQty] = useState(0);
   const [itemPrice, setItemPrice] = useState(1.0);
   const [tax, setTax] = useState(0.0);
   const [discount, setDiscount] = useState(0.0);
   const [notes, setNotes] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  const [items, setItem] = useState([
+    {
+      id: 0,
+      itemName,
+      itemDesc,
+      itemPrice,
+      itemQty,
+    },
+  ]);
 
   const handleInvoicePreview = (e) => {
     e.preventDefault();
@@ -29,6 +41,25 @@ const Layout = () => {
 
   const hideModal = () => {
     setIsOpen(false);
+  };
+
+  const handleAddItemFormRow = () => {
+    let id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    let newItems = {
+      id: id,
+      itemName: itemName,
+      itemDesc: itemDesc,
+      itemPrice: itemPrice,
+      itemQty: itemQty,
+    };
+    setItem([...items, newItems]);
+  };
+
+  console.log(items);
+
+  const handleRemoveRow = (index) => {
+    items.splice(index, 1);
+    setItem([...items]);
   };
 
   return (
@@ -147,107 +178,52 @@ const Layout = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td style={{ width: "100%" }}>
-                          <div className="my-1 flex-nowrap input-group">
-                            <TextInput
-                              type={"text"}
-                              required
-                              text={"Item name"}
-                              value={itemName}
-                              onChange={(e) => setItemName(e.target.value)}
-                            />
-                          </div>
-                          <div className="my-2 flex-nowrap input-group">
-                            <TextInput
-                              type={"text"}
-                              required
-                              text={"Item description"}
-                              value={itemDesc}
-                              onChange={(e) => setItemDesc(e.target.value)}
-                            />
-                          </div>
-                        </td>
-                        <td style={{ minWidth: "70px" }}>
-                          <TextInput
-                            type={"number"}
-                            required
-                            autoComplete="off"
-                            min="1"
-                            value={itemQty}
-                            onChange={(e) => setItemQty(e.target.value)}
+                      {items &&
+                        items.map((item, index) => (
+                          <ItemAddForm
+                            key={index}
+                            item={item}
+                            setItemDesc={setItemDesc}
+                            setItemName={setItemName}
+                            setItemPrice={setItemPrice}
+                            setItemQty={setItemQty}
+                            currency={currency}
+                            handleRemoveRow={() => handleRemoveRow(index)}
                           />
-                        </td>
-                        <td style={{ minWidth: "70px" }}>
-                          <div className="my-1 flex-nowrap input-group">
-                            <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
-                              <span
-                                className="border border-2 border-secondary rounded-circle d-flex align-items-center justify-content-center small"
-                                style={{ width: "20px", height: "20px" }}
-                              >
-                                $
-                              </span>
-                            </span>
-                            <TextInput
-                              type={"number"}
-                              required
-                              autoComplete="off"
-                              value={itemPrice}
-                              onChange={(e) => setItemPrice(e.target.value)}
-                            />
-                          </div>
-                        </td>
-                        <td
-                          className="text-center"
-                          style={{ minWidth: "50px" }}
-                        >
-                          <svg
-                            stroke="currentColor"
-                            fill="currentColor"
-                            strokeWidth="0"
-                            viewBox="0 0 24 24"
-                            className="text-white mt-1 btn btn-danger"
-                            height="1em"
-                            width="1em"
-                            xmlns="http://www.w3.org/2000/svg"
-                            style={{
-                              height: "33px",
-                              width: "33px",
-                              padding: "7.5px",
-                            }}
-                          >
-                            <path
-                              fill="none"
-                              d="M17.004 20L17.003 8h-1-8-1v12H17.004zM13.003 10h2v8h-2V10zM9.003 10h2v8h-2V10zM9.003 4H15.003V6H9.003z"
-                            ></path>
-                            <path d="M5.003,20c0,1.103,0.897,2,2,2h10c1.103,0,2-0.897,2-2V8h2V6h-3h-1V4c0-1.103-0.897-2-2-2h-6c-1.103,0-2,0.897-2,2v2h-1h-3 v2h2V20z M9.003,4h6v2h-6V4z M8.003,8h8h1l0.001,12H7.003V8H8.003z"></path>
-                            <path d="M9.003 10H11.003V18H9.003zM13.003 10H15.003V18H13.003z"></path>
-                          </svg>
-                        </td>
-                      </tr>
+                        ))}
                     </tbody>
                   </table>
-                  <button className="btn btn-primary">Add Item</button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleAddItemFormRow}
+                  >
+                    Add Item
+                  </button>
                 </section>
                 <section className="mt-4 justify-content-end row">
                   <div className="col-lg-6">
                     <div className="d-flex flex-row align-items-start justify-content-between">
                       <span className="fw-bold">Subtotal:</span>
-                      <span>$1.00</span>
+                      <span> {currency} 1.00</span>
                     </div>
                     <div className="d-flex flex-row align-items-start justify-content-between">
                       <span className="fw-bold">Discount:</span>
-                      <span>(0%)$0.00</span>
+                      <span>
+                        ({discount}%) {currency} 0.00
+                      </span>
                     </div>
                     <div className="d-flex flex-row align-items-start justify-content-between">
                       <span className="fw-bold">Tax:</span>
-                      <span>(0%)$0.00</span>
+                      <span>
+                        ({tax}%) {currency} 0.00
+                      </span>
                     </div>
                     <div className="d-flex flex-row align-items-start justify-content-between"></div>
                     <hr />
                     <div className="d-flex flex-row align-items-start justify-content-between">
                       <span className="fw-bold">Total:</span>
-                      <span className="fw-bold">$0.00</span>
+                      <span className="fw-bold">{currency} 0.00</span>
                     </div>
                   </div>
                 </section>
@@ -281,6 +257,8 @@ const Layout = () => {
                 <select
                   aria-label="Change Currency"
                   className="btn btn-light my-1 form-select"
+                  onChange={(e) => setCurrency(e.target.value)}
+                  defaultValue={currency}
                 >
                   <option value="$">USD (United States Dollar)</option>
                   <option value="£">GBP (British Pound Sterling)</option>
@@ -359,7 +337,7 @@ const Layout = () => {
           </div>
           <div className="text-end ms-4">
             <h6 className="fw-bold mt-1 mb-2">Amount Due:</h6>
-            <h5 className="fw-bold text-secondary">$1234</h5>
+            <h5 className="fw-bold text-secondary">{currency}1234</h5>
           </div>
         </Modal.Header>
         <Modal.Body className="p-4">
@@ -386,19 +364,19 @@ const Layout = () => {
               <tr>
                 <th>QTY</th>
                 <th>DESCRIPTION</th>
-                <th>PRICE</th>
-                <th>AMOUNT</th>
+                <th className="text-end">PRICE</th>
+                <th className="text-end">AMOUNT</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>1</td>
-                <td>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Doloribus, ut.
+                <td>{itemQty}</td>
+                <td>{`${itemName} - ${itemDesc}`}</td>
+                <td className="text-end">
+                  {currency}
+                  {itemPrice}
                 </td>
-                <td>$5</td>
-                <td>$5</td>
+                <td className="text-end">{currency} 1200</td>
               </tr>
             </tbody>
           </table>
@@ -415,7 +393,7 @@ const Layout = () => {
                   SUBTOTAL
                 </td>
                 <td className="text-end" style={{ width: "100px" }}>
-                  $ 120
+                  {currency} 120
                 </td>
               </tr>
               <tr className="text-end">
@@ -424,7 +402,7 @@ const Layout = () => {
                   TAX
                 </td>
                 <td className="text-end" style={{ width: "100px" }}>
-                  $ {tax}
+                  {currency} {tax}
                 </td>
               </tr>
               <tr className="text-end">
@@ -433,7 +411,7 @@ const Layout = () => {
                   DISCOUNT
                 </td>
                 <td className="text-end" style={{ width: "100px" }}>
-                  $ {discount}
+                  {currency} {discount}
                 </td>
               </tr>
               <tr className="text-end">
@@ -442,7 +420,7 @@ const Layout = () => {
                   TOTAL
                 </td>
                 <td className="text-end" style={{ width: "100px" }}>
-                  $ 120
+                  {currency} 120
                 </td>
               </tr>
             </tbody>
