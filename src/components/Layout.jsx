@@ -1,9 +1,10 @@
+import _ from "lodash";
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
+import { BiTrash } from "react-icons/bi";
 import { ReactSVG } from "react-svg";
 import Fly from "../assets/img/Fly.svg";
 import Hr from "./Hr";
-import ItemAddForm from "./ItemAddForm";
 
 const Layout = () => {
   const [invoiceNumber, setInvoiceNumber] = useState(1);
@@ -19,20 +20,13 @@ const Layout = () => {
   const [date, setDate] = useState("");
   const [itemQty, setItemQty] = useState(0);
   const [itemPrice, setItemPrice] = useState(1.0);
+  const [itemInput, setItemInput] = useState({});
   const [tax, setTax] = useState(0.0);
   const [discount, setDiscount] = useState(0.0);
   const [notes, setNotes] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const [items, setItem] = useState([
-    {
-      id: 0,
-      itemName,
-      itemDesc,
-      itemPrice,
-      itemQty,
-    },
-  ]);
+  const [items, setItem] = useState([itemInput]);
 
   const handleInvoicePreview = (e) => {
     e.preventDefault();
@@ -47,20 +41,32 @@ const Layout = () => {
     let id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
     let newItems = {
       id: id,
-      itemName: itemName,
-      itemDesc: itemDesc,
-      itemPrice: itemPrice,
-      itemQty: itemQty,
+      itemName: "",
+      itemDesc: "",
+      itemPrice: "1.0",
+      itemQty: 1,
     };
-    setItem([...items, newItems]);
+    setItem([...items, _.isEmpty(itemInput) ? newItems : itemInput]);
   };
 
-  console.log(items);
+  const handleItem = (e) => {
+    const { name, value } = e.target;
+    // setItemName(e.target.value);
+    // setItemDesc(e.target.value);
+    // setItemPrice(e.target.value);
+    // setItemQty(e.target.value);
+    setItemInput({
+      ...itemInput,
+      [name]: value,
+    });
+  };
 
   const handleRemoveRow = (index) => {
     items.splice(index, 1);
     setItem([...items]);
   };
+
+  console.log();
 
   return (
     <>
@@ -180,16 +186,79 @@ const Layout = () => {
                     <tbody>
                       {items &&
                         items.map((item, index) => (
-                          <ItemAddForm
-                            key={index}
-                            item={item}
-                            setItemDesc={setItemDesc}
-                            setItemName={setItemName}
-                            setItemPrice={setItemPrice}
-                            setItemQty={setItemQty}
-                            currency={currency}
-                            handleRemoveRow={() => handleRemoveRow(index)}
-                          />
+                          <tr key={index}>
+                            <td style={{ width: "100%" }}>
+                              <div className="my-1 flex-nowrap input-group">
+                                <input
+                                  className="form-control"
+                                  type={"text"}
+                                  required
+                                  name="itemName"
+                                  placeholder="Item name"
+                                  value={item.itemName}
+                                  onChange={handleItem}
+                                />
+                              </div>
+                              <div className="my-2 flex-nowrap input-group">
+                                <input
+                                  className="form-control"
+                                  type={"text"}
+                                  required
+                                  placeholder="Item description"
+                                  name="itemDesc"
+                                  value={item.itemDesc}
+                                  onChange={handleItem}
+                                />
+                              </div>
+                            </td>
+                            <td style={{ minWidth: "70px" }}>
+                              <input
+                                className="form-control"
+                                type={"number"}
+                                required
+                                autoComplete="off"
+                                min="1"
+                                value={item.itemQty}
+                                name="itemQty"
+                                onChange={handleItem}
+                              />
+                            </td>
+                            <td style={{ minWidth: "70px" }}>
+                              <div className="my-1 flex-nowrap input-group">
+                                <span className="bg-light fw-bold border-0 text-secondary px-2 input-group-text">
+                                  <span
+                                    className="border border-2 border-secondary rounded-circle d-flex align-items-center justify-content-center small"
+                                    style={{ width: "20px", height: "20px" }}
+                                  >
+                                    {currency}
+                                  </span>
+                                </span>
+                                <input
+                                  className="form-control"
+                                  type={"number"}
+                                  required
+                                  autoComplete="off"
+                                  value={item.itemPrice}
+                                  name="itemPrice"
+                                  onChange={handleItem}
+                                />
+                              </div>
+                            </td>
+                            <td
+                              className="text-center"
+                              style={{ minWidth: "50px" }}
+                            >
+                              <BiTrash
+                                onClick={handleRemoveRow}
+                                style={{
+                                  height: "33px",
+                                  width: "33px",
+                                  padding: "7.5px",
+                                }}
+                                className="text-white mt-1 btn btn-danger"
+                              />
+                            </td>
+                          </tr>
                         ))}
                     </tbody>
                   </table>
@@ -369,15 +438,18 @@ const Layout = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{itemQty}</td>
-                <td>{`${itemName} - ${itemDesc}`}</td>
-                <td className="text-end">
-                  {currency}
-                  {itemPrice}
-                </td>
-                <td className="text-end">{currency} 1200</td>
-              </tr>
+              {/* { items &&
+                items.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.itemQty}</td>
+                    <td>{`${item.itemName} - ${item.itemDesc}`}</td>
+                    <td className="text-end">
+                      {currency}
+                      {item.itemPrice}
+                    </td>
+                    <td className="text-end">{currency} 1200</td>
+                  </tr>
+                ))} */}
             </tbody>
           </table>
           <table className="table">
@@ -425,7 +497,7 @@ const Layout = () => {
               </tr>
             </tbody>
           </table>
-          <div className="bg-light py-3 px-4 rounded">{itemDesc}</div>
+          <div className="bg-light py-3 px-4 rounded">{notes}</div>
         </Modal.Body>
         <div className="row p-4">
           <div className="col-md-6">
