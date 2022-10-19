@@ -1,4 +1,5 @@
-import _ from "lodash";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { BiTrash } from "react-icons/bi";
@@ -46,7 +47,7 @@ const Layout = () => {
       itemPrice: "1.0",
       itemQty: 1,
     };
-    setItem([...items, _.isEmpty(itemInput) ? newItems : itemInput]);
+    setItem([...items, newItems]);
   };
 
   const handleItem = (e) => {
@@ -66,7 +67,22 @@ const Layout = () => {
     setItem([...items]);
   };
 
-  console.log();
+  const generatePdf = () => {
+    html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: [612, 792],
+      });
+      pdf.internal.scaleFactor = 1;
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("invoice.001.pdf");
+    });
+  };
 
   return (
     <>
@@ -399,106 +415,108 @@ const Layout = () => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
-          <div className="w-100">
-            <h4 className="fw-bold my-2">{whoIsInvoiceFrom}</h4>
-            <h6 className="fw-bold text-secondary mb-1">{invoiceNumber}</h6>
-          </div>
-          <div className="text-end ms-4">
-            <h6 className="fw-bold mt-1 mb-2">Amount Due:</h6>
-            <h5 className="fw-bold text-secondary">{currency}1234</h5>
-          </div>
-        </Modal.Header>
-        <Modal.Body className="p-4">
-          <div className="row mb-4">
-            <div className="col-md-4">
-              <div className="fw-bold">Billed to:</div>
-              <div>{whoIsInvoiceTo}</div>
-              <div>{billingAddressTo}</div>
-              <div>{emailTo}</div>
+        <div id="invoiceCapture">
+          <Modal.Header className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
+            <div className="w-100">
+              <h4 className="fw-bold my-2">{whoIsInvoiceFrom}</h4>
+              <h6 className="fw-bold text-secondary mb-1">{invoiceNumber}</h6>
             </div>
-            <div className="col-md-4">
-              <div className="fw-bold">Billed From:</div>
-              <div>{whoIsInvoiceFrom}</div>
-              <div>{billingAddressFrom}</div>
-              <div>{emailFrom}</div>
+            <div className="text-end ms-4">
+              <h6 className="fw-bold mt-1 mb-2">Amount Due:</h6>
+              <h5 className="fw-bold text-secondary">{currency}1234</h5>
             </div>
-            <div className="col-md-4">
-              <div className="fw-bold">Date of issue:</div>
-              <div>2022-02-08</div>
+          </Modal.Header>
+          <Modal.Body className="p-4">
+            <div className="row mb-4">
+              <div className="col-md-4">
+                <div className="fw-bold">Billed to:</div>
+                <div>{whoIsInvoiceTo}</div>
+                <div>{billingAddressTo}</div>
+                <div>{emailTo}</div>
+              </div>
+              <div className="col-md-4">
+                <div className="fw-bold">Billed From:</div>
+                <div>{whoIsInvoiceFrom}</div>
+                <div>{billingAddressFrom}</div>
+                <div>{emailFrom}</div>
+              </div>
+              <div className="col-md-4">
+                <div className="fw-bold">Date of issue:</div>
+                <div>2022-02-08</div>
+              </div>
             </div>
-          </div>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>QTY</th>
-                <th>DESCRIPTION</th>
-                <th className="text-end">PRICE</th>
-                <th className="text-end">AMOUNT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* { items &&
-                items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.itemQty}</td>
-                    <td>{`${item.itemName} - ${item.itemDesc}`}</td>
-                    <td className="text-end">
-                      {currency}
-                      {item.itemPrice}
-                    </td>
-                    <td className="text-end">{currency} 1200</td>
-                  </tr>
-                ))} */}
-            </tbody>
-          </table>
-          <table className="table">
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr className="text-end">
-                <td></td>
-                <td className="fw-bold" style={{ width: "100px" }}>
-                  SUBTOTAL
-                </td>
-                <td className="text-end" style={{ width: "100px" }}>
-                  {currency} 120
-                </td>
-              </tr>
-              <tr className="text-end">
-                <td></td>
-                <td className="fw-bold" style={{ width: "100px" }}>
-                  TAX
-                </td>
-                <td className="text-end" style={{ width: "100px" }}>
-                  {currency} {tax}
-                </td>
-              </tr>
-              <tr className="text-end">
-                <td></td>
-                <td className="fw-bold" style={{ width: "100px" }}>
-                  DISCOUNT
-                </td>
-                <td className="text-end" style={{ width: "100px" }}>
-                  {currency} {discount}
-                </td>
-              </tr>
-              <tr className="text-end">
-                <td></td>
-                <td className="fw-bold" style={{ width: "100px" }}>
-                  TOTAL
-                </td>
-                <td className="text-end" style={{ width: "100px" }}>
-                  {currency} 120
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="bg-light py-3 px-4 rounded">{notes}</div>
-        </Modal.Body>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>QTY</th>
+                  <th>DESCRIPTION</th>
+                  <th className="text-end">PRICE</th>
+                  <th className="text-end">AMOUNT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* { items &&
+                  items.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.itemQty}</td>
+                      <td>{`${item.itemName} - ${item.itemDesc}`}</td>
+                      <td className="text-end">
+                        {currency}
+                        {item.itemPrice}
+                      </td>
+                      <td className="text-end">{currency} 1200</td>
+                    </tr>
+                  ))} */}
+              </tbody>
+            </table>
+            <table className="table">
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr className="text-end">
+                  <td></td>
+                  <td className="fw-bold" style={{ width: "100px" }}>
+                    SUBTOTAL
+                  </td>
+                  <td className="text-end" style={{ width: "100px" }}>
+                    {currency} 120
+                  </td>
+                </tr>
+                <tr className="text-end">
+                  <td></td>
+                  <td className="fw-bold" style={{ width: "100px" }}>
+                    TAX
+                  </td>
+                  <td className="text-end" style={{ width: "100px" }}>
+                    {currency} {tax}
+                  </td>
+                </tr>
+                <tr className="text-end">
+                  <td></td>
+                  <td className="fw-bold" style={{ width: "100px" }}>
+                    DISCOUNT
+                  </td>
+                  <td className="text-end" style={{ width: "100px" }}>
+                    {currency} {discount}
+                  </td>
+                </tr>
+                <tr className="text-end">
+                  <td></td>
+                  <td className="fw-bold" style={{ width: "100px" }}>
+                    TOTAL
+                  </td>
+                  <td className="text-end" style={{ width: "100px" }}>
+                    {currency} 120
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="bg-light py-3 px-4 rounded">{notes}</div>
+          </Modal.Body>
+        </div>
         <div className="row p-4">
           <div className="col-md-6">
             <button className="d-block w-100 btn btn-primary">
@@ -511,7 +529,7 @@ const Layout = () => {
           <div className="col-md-6">
             <button
               className="d-block w-100 mt-3 mt-md-0 btn btn-outline-primary"
-              onClick={hideModal}
+              onClick={generatePdf}
             >
               <span className="d-flex justify-content-center">
                 <ReactSVG src={Fly} />
