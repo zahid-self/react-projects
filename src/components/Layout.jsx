@@ -27,8 +27,6 @@ const Layout = () => {
   const [notes, setNotes] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const [items, setItem] = useState([itemInput]);
-
   const handleInvoicePreview = (e) => {
     e.preventDefault();
     setIsOpen(true);
@@ -37,6 +35,8 @@ const Layout = () => {
   const hideModal = () => {
     setIsOpen(false);
   };
+
+  const [items, setItem] = useState([itemInput]);
 
   const handleAddItemFormRow = () => {
     let id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
@@ -52,10 +52,6 @@ const Layout = () => {
 
   const handleItem = (e) => {
     const { name, value } = e.target;
-    // setItemName(e.target.value);
-    // setItemDesc(e.target.value);
-    // setItemPrice(e.target.value);
-    // setItemQty(e.target.value);
     setItemInput({
       ...itemInput,
       [name]: value,
@@ -83,6 +79,8 @@ const Layout = () => {
       pdf.save("invoice.001.pdf");
     });
   };
+
+  console.log(items);
 
   return (
     <>
