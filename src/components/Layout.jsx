@@ -21,7 +21,13 @@ const Layout = () => {
   const [date, setDate] = useState("");
   const [itemQty, setItemQty] = useState(0);
   const [itemPrice, setItemPrice] = useState(1.0);
-  const [itemInput, setItemInput] = useState({});
+  const [itemInput, setItemInput] = useState({
+    id: 0,
+    itemName: "",
+    itemDesc: "",
+    itemPrice: "1.0",
+    itemQty: 0,
+  });
   const [tax, setTax] = useState(0.0);
   const [discount, setDiscount] = useState(0.0);
   const [notes, setNotes] = useState("");
@@ -40,26 +46,43 @@ const Layout = () => {
 
   const handleAddItemFormRow = () => {
     let id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    let newItems = {
+    const newItem = {
       id: id,
       itemName: "",
       itemDesc: "",
       itemPrice: "1.0",
-      itemQty: 1,
-    };
-    setItem([...items, newItems]);
+      itemQty: 0,
+    }
+    setItem([...items, newItem]);
   };
 
-  const handleItem = (e) => {
+  const handleItem = (e, id) => {
     const { name, value } = e.target;
-    // setItemName(e.target.value);
-    // setItemDesc(e.target.value);
-    // setItemPrice(e.target.value);
-    // setItemQty(e.target.value);
-    setItemInput({
-      ...itemInput,
-      [name]: value,
+    const tempItem = JSON.parse(JSON.stringify(items));
+    const remainingItems = tempItem.filter( item => {
+      return item.id !== id;
     });
+    const targetedItem = tempItem.find((item) => {
+      return item.id === id
+    })
+    if(name === 'itemName'){
+      targetedItem['itemName'] = value;
+    }
+    if(name === 'itemDesc'){
+      targetedItem['itemDesc'] = value;
+    }
+    if(name === 'itemPrice'){
+      targetedItem['itemPrice'] = value;
+    }
+    if(name === 'itemQty'){
+      targetedItem['itemQty'] = value;
+    }
+    
+    setItem([targetedItem, ...remainingItems])
+    // setItemInput({
+    //   ...itemInput,
+    //   [name]: value,
+    // });
   };
 
   const handleRemoveRow = (index) => {
@@ -83,6 +106,7 @@ const Layout = () => {
       pdf.save("invoice.001.pdf");
     });
   };
+
 
   return (
     <>
@@ -212,7 +236,7 @@ const Layout = () => {
                                   name="itemName"
                                   placeholder="Item name"
                                   value={item.itemName}
-                                  onChange={handleItem}
+                                  onChange={(e) => handleItem(e, item.id)}
                                 />
                               </div>
                               <div className="my-2 flex-nowrap input-group">
@@ -223,7 +247,7 @@ const Layout = () => {
                                   placeholder="Item description"
                                   name="itemDesc"
                                   value={item.itemDesc}
-                                  onChange={handleItem}
+                                  onChange={(e) => handleItem(e, item.id)}
                                 />
                               </div>
                             </td>
@@ -236,7 +260,7 @@ const Layout = () => {
                                 min="1"
                                 value={item.itemQty}
                                 name="itemQty"
-                                onChange={handleItem}
+                                onChange={(e) => handleItem(e, item.id)}
                               />
                             </td>
                             <td style={{ minWidth: "70px" }}>
@@ -256,7 +280,7 @@ const Layout = () => {
                                   autoComplete="off"
                                   value={item.itemPrice}
                                   name="itemPrice"
-                                  onChange={handleItem}
+                                  onChange={(e) => setItemPrice(e, item.id)}
                                 />
                               </div>
                             </td>
@@ -455,7 +479,7 @@ const Layout = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* { items &&
+                { items &&
                   items.map((item, index) => (
                     <tr key={index}>
                       <td>{item.itemQty}</td>
@@ -466,7 +490,7 @@ const Layout = () => {
                       </td>
                       <td className="text-end">{currency} 1200</td>
                     </tr>
-                  ))} */}
+                  ))}
               </tbody>
             </table>
             <table className="table">
