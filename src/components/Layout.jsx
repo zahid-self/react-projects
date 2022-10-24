@@ -21,9 +21,8 @@ const Layout = () => {
   const [date, setDate] = useState("");
   const [itemQty, setItemQty] = useState(0);
   const [itemPrice, setItemPrice] = useState(1.0);
-  let id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
   const [itemInput, setItemInput] = useState({
-    id: id,
+    id: '1',
     itemName: "",
     itemDesc: "",
     itemPrice: "1.0",
@@ -57,42 +56,41 @@ const Layout = () => {
     setItem([...items, newItem]);
   };
 
-  const handleItem = (e) => {
+  const handleItem = (e, index) => {
     const id = e.target.id;
     const name = e.target.name;
     const value = e.target.value;
 
-    const tempItems = JSON.parse(JSON.stringify(items));
-    const remainingItems = tempItems.filter((item) => {
-      return item.id !== id;
-    });
-    const targetedItem = tempItems.find((item) => {
-      return item.id === id;
-    });
+    // const tempItems = JSON.parse(JSON.stringify(items));
 
-    console.log(id);
+    // const remainingItems = tempItems.filter((item) => {
+    //   return item.id !== id;
+    // });
+    // const targetedItem = tempItems.find((item) => {
+    //   return item.id === id;
+    // });
 
-    if (name === "itemName" && targetedItem.id === id) {
-      targetedItem[name] = value;
+    let clone = [...items];
+    let obj = clone[index];
+
+    console.log(index);
+    if (name === "itemName") {
+      obj.itemName = value;
     }
-    if (name === "itemDesc") {
-      // console.log(value);
-      targetedItem["itemName"] = value;
+    if (name === "itemDesc" ) {
+      obj.itemDesc = value;
     }
     if (name === "itemPrice") {
-      // console.log(value);
-      targetedItem[name] = value;
+      obj.itemPrice = value;
     }
     if (name === "itemQty") {
-      // console.log(value);
-      targetedItem[name] = value;
+      obj.itemQty = value;
     }
 
-    setItem([targetedItem, ...remainingItems]);
-    // setItemInput({
-    //   ...itemInput,
-    //   [name]: value,
-    // });
+    clone[index] = obj;
+    setItem([...clone]);
+    // setItem([...remainingItems, targetedItem]);
+  
   };
 
   const handleRemoveRow = (index) => {
@@ -100,7 +98,6 @@ const Layout = () => {
     setItem([...items]);
   };
 
-  console.log(items);
 
   const generatePdf = () => {
     html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -239,7 +236,7 @@ const Layout = () => {
                         items.map((item, index) => (
                           <tr key={index}>
                             <td style={{ width: "100%" }}>
-                              <InputGroup>
+                              <InputGroup className="mb-1">
                                 <Form.Control
                                   className="form-control"
                                   type={"text"}
@@ -247,11 +244,11 @@ const Layout = () => {
                                   name="itemName"
                                   placeholder="Item name"
                                   value={item.itemName}
-                                  onChange={handleItem}
                                   id={item.id}
+                                  onChange={(e) => handleItem(e, index)}
                                 />
                               </InputGroup>
-                              <InputGroup>
+                              <InputGroup className="mb-1">
                                 <Form.Control
                                   className="form-control"
                                   type={"text"}
@@ -260,12 +257,12 @@ const Layout = () => {
                                   name="itemDesc"
                                   value={item.itemDesc}
                                   id={item.id}
-                                  onChange={handleItem}
+                                  onChange={(e) => handleItem(e, index)}
                                 />
                               </InputGroup>
                             </td>
                             <td style={{ minWidth: "70px" }}>
-                              <InputGroup>
+                              <InputGroup className="mb-1">
                                 <Form.Control
                                   className="form-control"
                                   type="number"
@@ -273,12 +270,12 @@ const Layout = () => {
                                   value={item.itemQty}
                                   name="itemQty"
                                   id={item.id}
-                                  onChange={handleItem}
+                                  onChange={(e) => handleItem(e, index)}
                                 />
                               </InputGroup>
                             </td>
                             <td style={{ minWidth: "70px" }}>
-                              <InputGroup>
+                              <InputGroup className="mb-1">
                                 <input
                                   className="form-control"
                                   type="number"
@@ -286,7 +283,7 @@ const Layout = () => {
                                   value={item.itemPrice}
                                   name="itemPrice"
                                   id={item.id}
-                                  onChange={handleItem}
+                                  onChange={(e) => handleItem(e, index)}
                                 />
                               </InputGroup>
                             </td>
