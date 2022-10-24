@@ -57,7 +57,7 @@ const Layout = () => {
   };
 
   const handleItem = (e, index) => {
-    const id = e.target.id;
+   
     const name = e.target.name;
     const value = e.target.value;
 
@@ -73,7 +73,6 @@ const Layout = () => {
     let clone = [...items];
     let obj = clone[index];
 
-    console.log(index);
     if (name === "itemName") {
       obj.itemName = value;
     }
@@ -89,7 +88,6 @@ const Layout = () => {
 
     clone[index] = obj;
     setItem([...clone]);
-    // setItem([...remainingItems, targetedItem]);
   
   };
 
