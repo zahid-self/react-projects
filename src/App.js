@@ -12,10 +12,10 @@ function App() {
                 Simple Dynamic Counter Application
             </h1>
             <div className="max-w-md mx-auto mt-10 space-y-5" id="countersParent">
-                {/* <HooksCounter/> */}
-                {/* <DyamicCounter/> */}
-                <VariableCounter dynamic={false}/>
-                <VariableCounter dynamic={true}/>
+                <HooksCounter/>
+                <DyamicCounter/>
+                {/* <VariableCounter dynamic={false}/>
+                <VariableCounter dynamic={true}/> */}
             </div>
         </div>
     </Provider>
