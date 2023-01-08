@@ -12,7 +12,7 @@ function App() {
             </h1>
         </div>
         <div className="grid grid-cols-12 gap-6">
-           <Products/>
+            <Products/>
             <Cart/>
         </div>
     </div>
