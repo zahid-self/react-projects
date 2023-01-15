@@ -1,4 +1,4 @@
-import { ADDED,TOGGLED,CLREADCOMPLETED,COMPLETEDALLTODOS,DELETED,COLORCHANGED } from "./actionTypes"
+import { ADDED,TOGGLED,CLREACOMPLETED,ALLCOMPLETED,DELETED,COLORSELECTED } from "./actionTypes"
 
 export function added(inputText){
     return{
@@ -16,13 +16,13 @@ export function toggled(todoId){
 
 export function clearComplted(){
     return{
-        type: CLREADCOMPLETED,
+        type: CLREACOMPLETED,
     }
 }
 
 export function clearAllTodos(){
     return{
-        type: COMPLETEDALLTODOS
+        type: ALLCOMPLETED
     }
 }
 
@@ -33,9 +33,9 @@ export function deleteTodo(todoId){
     }
 }
 
-export function colorChange(todoId, color){
+export function colorSelect(todoId, color){
     return{
-        type: DELETED,
+        type: COLORSELECTED,
         payload: {
             todoId,
             color

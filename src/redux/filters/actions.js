@@ -1,11 +1,11 @@
 import { COLORCHANGED, STATUSCHANGED } from "./actionTypes"
 
-export function colorChange(color, toggle){
+export function colorChange(color, changeType){
     return{
         type: COLORCHANGED,
         payload: {
             color,
-            toggle
+            changeType
         }
     }
 }
