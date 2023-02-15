@@ -14,6 +14,23 @@ export function toggled(todoId){
     }
 }
 
+export function colorSelect(todoId, color){
+    return{
+        type: COLORSELECTED,
+        payload: {
+            todoId,
+            color
+        }
+    }
+}
+
+export function deleteTodo(todoId){
+    return{
+        type: DELETED,
+        payload: todoId
+    }
+}
+
 export function clearComplted(){
     return{
         type: CLREACOMPLETED,
@@ -26,19 +43,5 @@ export function clearAllTodos(){
     }
 }
 
-export function deleteTodo(todoId){
-    return{
-        type: DELETED,
-        payload: todoId
-    }
-}
 
-export function colorSelect(todoId, color){
-    return{
-        type: COLORSELECTED,
-        payload: {
-            todoId,
-            color
-        }
-    }
-}
+
