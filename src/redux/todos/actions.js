@@ -37,7 +37,7 @@ export function clearComplted(){
     }
 }
 
-export function clearAllTodos(){
+export function completeAllTodos(){
     return{
         type: ALLCOMPLETED
     }
