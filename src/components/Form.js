@@ -4,6 +4,7 @@ import notesImage from "../images/notes.png"
 import doubleClickImage from "../images/double-tick.png"
 import { useDispatch } from 'react-redux'
 import { added, clearComplted, completeAllTodos } from '../redux/todos/actions'
+import addTodo from '../redux/todos/thunk/addTodo'
 
 const Form = () => {
 
@@ -24,7 +25,7 @@ const Form = () => {
 
     const handleAddTodo = (e) => {
         e.preventDefault();
-        dispatch(added(inputText))
+        dispatch(addTodo(inputText))
         setInpuText('')
     }
 

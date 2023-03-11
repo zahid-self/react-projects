@@ -1,4 +1,11 @@
-import { ADDED,TOGGLED,CLREACOMPLETED,ALLCOMPLETED,DELETED,COLORSELECTED } from "./actionTypes"
+import { ADDED,TOGGLED,CLREACOMPLETED,ALLCOMPLETED,DELETED,COLORSELECTED, LOADED } from "./actionTypes"
+
+export function loaded(todos){
+    return{
+        type: LOADED,
+        payload: todos
+    }
+}
 
 export function added(inputText){
     return{

@@ -1,10 +1,16 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import fetchTodo from '../redux/todos/thunk/fetchTodo';
 import Task from './Task'
 
 const Tasks = () => {
 
   const {todos, filters} = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchTodo)
+  },[dispatch])
 
   const filterWithStatus = (todo) => {
     const { status } = filters;
