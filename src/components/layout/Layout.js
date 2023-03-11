@@ -4,7 +4,7 @@ import Header from '../ui/Header'
 
 const Layout = ({ children }) => {
   return (
-    <div class="App">
+    <div className="App">
         <Header/>
             { children }
         <Footer/>

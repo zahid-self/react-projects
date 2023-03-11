@@ -8,8 +8,8 @@ import TransactionTitle from './components/ui/TransactionTitle';
 function App() {
   return (
    <Layout>
-       <div class="main">
-            <div class="container">
+       <div className="main">
+            <div className="container">
                 <TopCard/>
                 <Form/>
                 <TransactionTitle/>

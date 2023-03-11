@@ -1,34 +1,37 @@
-import React from 'react'
-import editImg from "../../assets/images/edit.svg"
-import deleteImg from "../../assets/images/delete.svg"
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchTransactionsAsync } from '../../features/transactions/transactionsSlice';
+import Transaction from './Transaction'
+
 
 const Transactions = () => {
-  return (
-    <div class="conatiner_of_list_of_transactions">
-        <ul>
-            <li class="transaction income">
-                <p>Earned this month</p>
-                <div class="right">
-                    <p>৳ 100</p>
-                    <button class="link">
-                        <img
-                            alt='Edit'
-                            class="icon"
-                            src={editImg}
-                        />
-                    </button>
-                    <button class="link">
-                        <img
-                            alt='Delete'
-                            class="icon"
-                            src={deleteImg}
-                        />
-                    </button>
-                </div>
-            </li>
-        </ul>
-    </div>
-  )
+
+    const dispatch = useDispatch();
+    const{transactions, isLoading, isError} = useSelector(state => state.transaction);
+
+    useEffect(() => {
+        dispatch(fetchTransactionsAsync())
+    },[dispatch])
+
+    let content = null;
+
+    if(isLoading) content = <p>Loading...</p>;
+    if(!isLoading && isError) content = <p className='error'>There was an error!</p>;
+    if(!isLoading && !isError && transactions.length > 0){
+        content = transactions.map(transaction => <Transaction key={transaction.id} transaction={transaction}/>)
+    }
+
+    if(!isLoading && !isError && transactions.length === 0){
+        content = <p>No transaction found!</p>;
+    }
+
+    return (
+        <div className="conatiner_of_list_of_transactions">
+            <ul>
+                {content}
+            </ul>
+        </div>
+    )
 }
 
 export default Transactions
