@@ -5,30 +5,6 @@
       "name": "Salary from Google",
       "type": "income",
       "amount": 1000000
-    },
-    {
-      "id": 2,
-      "name": "Family Expenses",
-      "type": "expense",
-      "amount": 200000
-    },
-    {
-      "name": "test",
-      "type": "income",
-      "amount": 300,
-      "id": 3
-    },
-    {
-      "name": "Sara Randall",
-      "type": "expense",
-      "amount": 20,
-      "id": 4
-    },
-    {
-      "name": "Abra Ruiz",
-      "type": "income",
-      "amount": 71,
-      "id": 5
     }
   ]
 }

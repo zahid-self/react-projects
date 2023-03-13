@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
-import { createTransactionsAsync } from '../../features/transactions/transactionsSlice';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { createTransactionsAsync, editTransactionsAsync } from '../../features/transactions/transactionsSlice';
+
 
 const Form = () => {
 
     const[name,setName] = useState('');
     const[type,setType] = useState('');
     const[amount,setAmount] = useState('');
+    const[editMode,setEditMode] = useState(false)
     const dispatch = useDispatch();
 
     const handleCreate = (e)=> {
@@ -16,69 +18,110 @@ const Form = () => {
             type,
             amount: Number(amount)
         }))
+        resetForm();
     }
 
-  return (
-    <div className="form">
-        <h3>Add new transaction</h3>
+    const resetForm = () => {
+        setName('')
+        setType('')
+        setAmount('')
+    }
 
-        <form onSubmit={handleCreate}>
-            <div className="form-group">
-                <label>Name</label>
-                <input
-                    type="text"
-                    name="name"
-                    required
-                    placeholder="enter expense name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-            </div>
+    const { editData } = useSelector(state => state.transaction);
 
-            <div className="form-group radio">
-                <label>Type</label>
-                <div className="radio_group">
+    useEffect(() => {
+        if(editData?.id){
+            setEditMode(true)
+            setName(editData?.name)
+            setType(editData?.type)
+            setAmount(editData?.amount)
+        }else{
+            resetForm()
+            setEditMode(false)
+        }
+
+    },[editData])
+
+    const handleEditMode = () => {
+        setEditMode(false)
+        resetForm()
+    }
+
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        dispatch(editTransactionsAsync({
+            id: editData?.id,
+            data:{
+                name : name,
+                type : type,
+                amount: Number(amount)
+            }
+        }))
+        setEditMode(false)
+        resetForm()
+    }
+
+    return (
+        <div className="form">
+            <h3>Add new transaction</h3>
+
+            <form onSubmit={editMode ? handleUpdate : handleCreate}>
+                <div className="form-group">
+                    <label>Name</label>
                     <input
-                        type="radio"
-                        value="income"
-                        name="type"
+                        type="text"
+                        name="name"
                         required
-                        checked={type === 'income'}
-                        onChange={() => setType('income')}
+                        placeholder="enter expense name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
-                    <label>Income</label>
                 </div>
-                <div className="radio_group">
+
+                <div className="form-group radio">
+                    <label>Type</label>
+                    <div className="radio_group">
+                        <input
+                            type="radio"
+                            value="income"
+                            name="type"
+                            required
+                            checked={type === 'income'}
+                            onChange={() => setType('income')}
+                        />
+                        <label>Income</label>
+                    </div>
+                    <div className="radio_group">
+                        <input
+                            type="radio"
+                            value="expense"
+                            name="type"
+                            placeholder="Expense"
+                            checked={type === 'expense'}
+                            onChange={() => setType('expense')}
+                        />
+                        <label>Expense</label>
+                    </div>
+                </div>
+
+                <div className="form-group">
+                    <label>Amount</label>
                     <input
-                        type="radio"
-                        value="expense"
-                        name="type"
-                        placeholder="Expense"
-                        checked={type === 'expense'}
-                        onChange={() => setType('expense')}
+                        type="number"
+                        placeholder="300"
+                        name="amount"
+                        required
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
                     />
-                    <label>Expense</label>
                 </div>
-            </div>
 
-            <div className="form-group">
-                <label>Amount</label>
-                <input
-                    type="number"
-                    placeholder="300"
-                    name="amount"
-                    required
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
-            </div>
+                <button className="btn" type='submit'>{ editMode ? 'Update Transaction' : 'Add Transaction' }</button>
+            </form>
 
-            <button className="btn" type='submit'>Add Transaction</button>
-        </form>
-
-        <button className="btn cancel_edit">Cancel Edit</button>
-    </div>
-  )
+            {editMode && <button className="btn cancel_edit" onClick={handleEditMode}>Cancel Edit</button>}
+        </div>
+    )
 }
 
 export default Form
